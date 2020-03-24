@@ -15,6 +15,8 @@ from datetime import datetime
 from statistics import *
 ####################### CALLBACKS ########################################
 
+def conexion():
+    print("Press")
 def on_connect(client, userdata, flags, rc):
     
     if rc == 0:
@@ -218,12 +220,6 @@ if __name__ == '__main__':
     client.message_callback_add(topic_humedad, on_message_humedad)
     client.message_callback_add(topic_air, on_message_calidad)
     client.loop_start()
-    ###################  MENU ##################################
-    box_menu = tk.Label(window,width=27 ,height=44,bg="#A9A9A9",relief=tk.RAISED)
-    box_menu.place(x=5,y=5)
-    l1=tk.Label(window,text="PARAMETROS DEL BROKER",font=("Helvetica 10 bold"),bg="#A9A9A9")
-    l1.place(x=5,y=20)
-    
     ##################### CURRENT  BOX ############################
     box_cur_temp = tk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_cur_temp.place(x=875,y=80)
@@ -238,7 +234,51 @@ if __name__ == '__main__':
     box_ave_humd.place(x=1075,y=305)
     box_ave_air = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_ave_air.place(x=1075,y=530)
-    
+    ###################  MENU ##################################
+    box_menu = tk.Label(window,width=27 ,height=44,bg="#A9A9A9",relief=tk.RAISED)
+    box_menu.place(x=0,y=5)
+    l1=tk.Label(window,text="PARAMETROS DEL BROKER",font=("Helvetica 10 bold"),bg="#A9A9A9")
+    l1.place(x=0,y=40)
+    host_1 = tk.Label(window,text="BROKER",font=("Helvetica 9 bold"),bg="#A9A9A9")
+    host_1.place(x=5,y=75)
+    port_1 = tk.Label(window,text="PORT",font=("Helvetica 9 bold"),bg="#A9A9A9")
+    port_1.place(x=5,y=125) 
+    user_1 = tk.Label(window,text="USERID",font=("Helvetica 9 bold"),bg="#A9A9A9")
+    user_1.place(x=5,y=175) 
+    pass_1 = tk.Label(window,text="PASSWORD",font=("Helvetica 9 bold"),bg="#A9A9A9")
+    pass_1.place(x=5,y=225) 
+    topic_1 = tk.Label(window,text="TOPIC TEMPERATURA",font=("Helvetica 9 bold"),bg="#A9A9A9")
+    topic_1.place(x=5,y=275) 
+    topic_2 = tk.Label(window,text="TOPIC HUMEDAD",font=("Helvetica 9 bold"),bg="#A9A9A9")
+    topic_2.place(x=5,y=325) 
+    topic_3= tk.Label(window,text="TOPIC CALIDA AIRE",font=("Helvetica 9 bold"),bg="#A9A9A9")
+    topic_3.place(x=5,y=375) 
+
+
+    host = tk.Entry(window,font=("Helvetica 9 italic"),width=26)
+    host.place(x=5,y=100)
+    host.insert(0,broker_address)
+    port1= tk.Entry(window,font=("Helvetica 9 italic"),width=26)
+    port1.place(x=5,y=150) 
+    port1.insert(0,port)
+    user1= tk.Entry(window,font=("Helvetica 9 italic"),width=26)
+    user1.place(x=5,y=200) 
+    user1.insert(0,user)
+    passw= tk.Entry(window,font=("Helvetica 9 italic"),width=26)
+    passw.place(x=5,y=250) 
+    passw.insert(0,password)
+    topic_t= tk.Entry(window,font=("Helvetica 9 italic"),width=26)
+    topic_t.place(x=5,y=300) 
+    topic_t.insert(0,topic_temperatura)
+    topic_h= tk.Entry(window,font=("Helvetica 9 italic"),width=26)
+    topic_h.place(x=5,y=350) 
+    topic_h.insert(0,topic_humedad)
+    topic_a= tk.Entry(window,font=("Helvetica 9 italic"),width=26)
+    topic_a.place(x=5,y=400) 
+    topic_a.insert(0,topic_air)
+       
+    conectar = tk.Button(window,text="Conectar",height=2, width=10,font=("Helvetica", 9, 'bold'),relief=tk.RAISED,command=conexion)
+    conectar.place(x=20,y=450)
     data = DataPlot()
     #dataploting=RealtimePlot(window)
     Start_page(window)    
