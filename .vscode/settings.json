@@ -3,5 +3,6 @@
         "stdio.h": "c",
         "esp_spi_flash.h": "c"
     },
+    "python.pythonPath": "C:\\Users\\Jenny\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
     //"terminal.integrated.shell.windows":"C:\\WINDOWS\\System32\\cmd.exe"
 }

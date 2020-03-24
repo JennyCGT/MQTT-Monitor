@@ -158,8 +158,25 @@ class RealtimePlot:
         #self.canvas.draw_idle()
         #self.canvas.draw()
 
-Connected = False   #global variable for the state of the connection
-
+class Start_page():
+    def __init__(self,window):
+        self.window = window
+            ##################### GRAPH  BOX ############################
+        self.box_temp = tk.Label(self.window,width=93 ,height=14,bg="#ADD8E6")
+        self.box_temp.place(x=200,y=5)
+        self.box_humd = tk.Label(self.window,width=93 ,height=14,bg="#ADD8E6")
+        self.box_humd.place(x=200,y=230)
+        self.box_air = tk.Label(self.window,width=93 ,height=14,bg="#ADD8E6")
+        self.box_air.place(x=200,y=455)
+        #Connected = False   #global variable for the state of the connection
+    ##################### CURRENT  BOX ############################
+        self.box_1_cur_temp = tk.Label(self.window,text="TEMPERATURA ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
+        self.box_1_cur_temp.place(x=875,y=5)
+        self.box_1_cur_humd = tk.Label(self.window,text="HUMEDAD ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
+        self.box_1_cur_humd.place(x=875,y=230)
+        self.box_1_cur_air = tk.Label(self.window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 10 bold"),width=24 ,height=3,bg="#008B8B")
+        self.box_1_cur_air.place(x=875,y=455)
+        
     
 
 if __name__ == '__main__':
@@ -180,7 +197,7 @@ if __name__ == '__main__':
     window = tk.Tk() # initialise a window
     window.title("Monitoring IOT")
     window.geometry("1300x700+5+5")
-    
+
     ######################## SETTING MQTT ################################
     client = mqttClient.Client("Python")               #create new instance
     client.username_pw_set(user, password=password)    #set username and password
@@ -194,72 +211,78 @@ if __name__ == '__main__':
     client.message_callback_add(topic_humedad, on_message_humedad)
     client.message_callback_add(topic_air, on_message_calidad)
     client.loop_start()
-    ################### 
-    ##################### GRAPH  BOX ############################
-    box_temp = tk.Label(window,width=90 ,height=13,bg="#ADD8E6")
+    ###################  MENU ##################################
+    box_menu = tk.Label(window,width=27 ,height=44,bg="#A9A9A9",relief=tk.RAISED)
+    box_menu.place(x=5,y=5)
+    l1=tk.Label(window,text="PARAMETROS DEL BROKER",font=("Helvetica 10 bold"),bg="#A9A9A9")
+    l1.place(x=5,y=20)
+    """ ##################### GRAPH  BOX ############################
+    box_temp = tk.Label(window,width=93 ,height=14,bg="#ADD8E6")
     box_temp.place(x=200,y=5)
-    box_humd = tk.Label(window,width=90 ,height=13,bg="#ADD8E6")
+    box_humd = tk.Label(window,width=93 ,height=14,bg="#ADD8E6")
     box_humd.place(x=200,y=230)
-    box_air = tk.Label(window,width=90 ,height=13,bg="#ADD8E6")
-    box_air.place(x=200,y=455)
+    box_air = tk.Label(window,width=93 ,height=14,bg="#ADD8E6")
+    box_air.place(x=200,y=455) """
     ##################### CURRENT  BOX ############################
-    box_1_cur_temp = tk.Label(window,text="TEMPERATURA ACTUAL",font=("Helvetica 9 bold"),width=25 ,height=3,bg="#008B8B")
+    """ box_1_cur_temp = tk.Label(window,text="TEMPERATURA ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
     box_1_cur_temp.place(x=875,y=5)
+     """
     box_cur_temp = tk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_cur_temp.place(x=875,y=80)
-    box_1_cur_humd = tk.Label(window,text="HUMEDAD ACTUAL",font=("Helvetica 9 bold"),width=25 ,height=3,bg="#008B8B")
-    box_1_cur_humd.place(x=875,y=230)
+    """ box_1_cur_humd = tk.Label(window,text="HUMEDAD ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
+    box_1_cur_humd.place(x=875,y=230) """
     box_cur_humd = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_cur_humd.place(x=875,y=305)
-    box_1_cur_air = tk.Label(window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 9 bold"),width=25 ,height=3,bg="#008B8B")
+    """[box_1_cur_air = tk.Label(window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 10 bold"),width=24 ,height=3,bg="#008B8B")
     box_1_cur_air.place(x=875,y=455)
+    """ 
     box_cur_air = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_cur_air.place(x=875,y=530)
     ##################### AVERAGE BOX############################
-    box_1_ave_temp = tk.Label(window,text="TEMPERATURA PROMEDIO",font=("Helvetica 9 bold"),width=25 ,height=3,bg="#ADD8E6")
+    box_1_ave_temp = tk.Label(window,text="TEMPERATURA PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
     box_1_ave_temp.place(x=1075,y=5)
     box_ave_temp = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_ave_temp.place(x=1075,y=80)
-    box_1_ave_humd = tk.Label(window,text="HUMEDAD PROMEDIO",font=("Helvetica 9 bold"),width=25 ,height=3,bg="#ADD8E6")
+    box_1_ave_humd = tk.Label(window,text="HUMEDAD PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
     box_1_ave_humd.place(x=1075,y=230)
     box_ave_humd = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_ave_humd.place(x=1075,y=305)
-    box_1_ave_air = tk.Label(window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 9 bold"),width=25 ,height=3,bg="#ADD8E6")
+    box_1_ave_air = tk.Label(window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
     box_1_ave_air.place(x=1075,y=455)
     box_ave_air = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_ave_air.place(x=1075,y=530)
     
     data = DataPlot()
     #dataploting=RealtimePlot(window)
-    
+    #Start_page(window)    
     
     #dataPlotting= RealtimePlot(a1,canvas)
-    fig = Figure(figsize=([6.2, 1.9]))
+    fig = Figure(figsize=([6.4, 1.9]))
     a = fig.add_subplot(111)
     a.set_ylabel("°C", fontsize=8)
     a.set_ylim(10,25)
     canvas = FigureCanvasTkAgg(fig, master=window,)
-    canvas.get_tk_widget().place(x=208,y=10)
+    canvas.get_tk_widget().place(x=208,y=17)
     canvas.draw()
     plot_data_t=RealtimePlot(a,canvas,fig)
     
-    fig1 = Figure(figsize=([6.2, 1.9]))
+    fig1 = Figure(figsize=([6.4, 1.9]))
     b = fig1.add_subplot(111)
     b.plot([],[])
     b.set_ylabel("°%", fontsize=8)
     b.set_ylim(30,80)
     canvas1 = FigureCanvasTkAgg(fig1, master=window,)
-    canvas1.get_tk_widget().place(x=208,y=235)
+    canvas1.get_tk_widget().place(x=208,y=242)
     canvas1.draw()
     plot_data_h=RealtimePlot(b,canvas1,fig1)
 
-    fig2 = Figure(figsize=([6.2, 1.9]))
+    fig2 = Figure(figsize=([6.4, 1.9]))
     c = fig2.add_subplot(111)
     b.plot([],[])
     c.set_ylabel("°% Air", fontsize=8)
     c.set_ylim(0,60)
     canvas2 = FigureCanvasTkAgg(fig2, master=window,)
-    canvas2.get_tk_widget().place(x=208,y=465)
+    canvas2.get_tk_widget().place(x=208,y=467)
     canvas2.draw() 
     plot_data_a=RealtimePlot(c,canvas2,fig2)
     
