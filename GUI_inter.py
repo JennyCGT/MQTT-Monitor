@@ -176,7 +176,14 @@ class Start_page():
         self.box_1_cur_humd.place(x=875,y=230)
         self.box_1_cur_air = tk.Label(self.window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 10 bold"),width=24 ,height=3,bg="#008B8B")
         self.box_1_cur_air.place(x=875,y=455)
-        
+    ########################## AVERAGE BOX ############################
+        self.box_1_ave_temp = tk.Label(self.window,text="TEMPERATURA PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        self.box_1_ave_temp.place(x=1075,y=5)
+        self.box_1_ave_humd = tk.Label(self.window,text="HUMEDAD PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        self.box_1_ave_humd.place(x=1075,y=230)
+        self.box_1_ave_air = tk.Label(self.window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        self.box_1_ave_air.place(x=1075,y=455)
+                
     
 
 if __name__ == '__main__':
@@ -216,45 +223,25 @@ if __name__ == '__main__':
     box_menu.place(x=5,y=5)
     l1=tk.Label(window,text="PARAMETROS DEL BROKER",font=("Helvetica 10 bold"),bg="#A9A9A9")
     l1.place(x=5,y=20)
-    """ ##################### GRAPH  BOX ############################
-    box_temp = tk.Label(window,width=93 ,height=14,bg="#ADD8E6")
-    box_temp.place(x=200,y=5)
-    box_humd = tk.Label(window,width=93 ,height=14,bg="#ADD8E6")
-    box_humd.place(x=200,y=230)
-    box_air = tk.Label(window,width=93 ,height=14,bg="#ADD8E6")
-    box_air.place(x=200,y=455) """
+    
     ##################### CURRENT  BOX ############################
-    """ box_1_cur_temp = tk.Label(window,text="TEMPERATURA ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
-    box_1_cur_temp.place(x=875,y=5)
-     """
     box_cur_temp = tk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_cur_temp.place(x=875,y=80)
-    """ box_1_cur_humd = tk.Label(window,text="HUMEDAD ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
-    box_1_cur_humd.place(x=875,y=230) """
     box_cur_humd = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_cur_humd.place(x=875,y=305)
-    """[box_1_cur_air = tk.Label(window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 10 bold"),width=24 ,height=3,bg="#008B8B")
-    box_1_cur_air.place(x=875,y=455)
-    """ 
     box_cur_air = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_cur_air.place(x=875,y=530)
     ##################### AVERAGE BOX############################
-    box_1_ave_temp = tk.Label(window,text="TEMPERATURA PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
-    box_1_ave_temp.place(x=1075,y=5)
     box_ave_temp = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_ave_temp.place(x=1075,y=80)
-    box_1_ave_humd = tk.Label(window,text="HUMEDAD PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
-    box_1_ave_humd.place(x=1075,y=230)
     box_ave_humd = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_ave_humd.place(x=1075,y=305)
-    box_1_ave_air = tk.Label(window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
-    box_1_ave_air.place(x=1075,y=455)
     box_ave_air = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
     box_ave_air.place(x=1075,y=530)
     
     data = DataPlot()
     #dataploting=RealtimePlot(window)
-    #Start_page(window)    
+    Start_page(window)    
     
     #dataPlotting= RealtimePlot(a1,canvas)
     fig = Figure(figsize=([6.4, 1.9]))
