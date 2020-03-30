@@ -12,9 +12,11 @@ import paho.mqtt.client as mqttClient
 import time
 from datetime import datetime
 import random 
+Connected = False 
 ####################### CALLBACKS ########################################
 
 def conexion():
+    global Connected  
     print(conectar.configure('text'))
     broker_address= host.get()  #Broker address
     port = port1.get()                    #Broker port
@@ -30,44 +32,72 @@ def conexion():
     client.on_connect= on_connect 
     client.on_message=on_message                     #attach function to callback
     client.on_disconnect=on_disconnect
-    if conectar.configure('text')[4]== 'Conectar':
-        client.connect(broker_address, port=int(port))          #connect to broker
-        client.message_callback_add(topic_temperatura, on_message_temperature)
-        client.message_callback_add(topic_humedad, on_message_humedad)
-        client.message_callback_add(topic_air, on_message_calidad)
-        client.loop_start()
-        time.sleep(0.1)
-        Start_page(window)
-        canvas = FigureCanvasTkAgg(fig, master=window,)
-        canvas.get_tk_widget().place(x=208,y=17)
-        canvas.draw()
-        canvas1 = FigureCanvasTkAgg(fig1, master=window,)
-        canvas1.get_tk_widget().place(x=208,y=242)
-        canvas1.draw()
-        canvas2 = FigureCanvasTkAgg(fig2, master=window,)
-        canvas2.get_tk_widget().place(x=208,y=467)
-        canvas2.draw()
-        conectar.configure(text="Desconectar")
-        count=1
-    else:
-        conectar.configure(text="Conectar")
-        client.loop_stop()
-        client.disconnect()
+    client.connect(broker_address, port=int(port))          #connect to broker
+    client.message_callback_add(topic_temperatura, on_message_temperature)
+    client.message_callback_add(topic_humedad, on_message_humedad)
+    client.message_callback_add(topic_air, on_message_calidad)
+    client.loop_start()
+    time.sleep(0.6)
+    print(Connected)
+    if Connected==True:        
+        if conectar.configure('text')[4]== 'Conectar':
+            Pagina_inicio.principal()
+            #canvas = FigureCanvasTkAgg(fig, master=window,)
+            canvas.get_tk_widget().place(x=10,y=10)
+            canvas.draw()
+            canvas1.get_tk_widget().place(x=10,y=10)
+            canvas1.draw()
+            canvas2.get_tk_widget().place(x=10,y=10)
+            canvas2.draw()
+            conectar.configure(text="Desconectar")
+            count=1
+        else:
+            conectar.configure(text="Conectar")
+            client.loop_stop()
+            client.disconnect()
+        #print(Connected)
+
+def conexion_inicio():
+    print("INICIO")
+    Pagina_inicio.principal()
+    canvas.get_tk_widget().config(width=640, height=190)
+    canvas1.get_tk_widget().config(width=640, height=190)
+    canvas2.get_tk_widget().config(width=640, height=190)
 
 def conexion_t():
     print("ABRIR TEMPERATURA")
+    Pagina_inicio.pagina_temperatura()
+    canvas.get_tk_widget().config(width=640, height=580)
+
+def conexion_h():
+    print("ABRIR TEMPERATURA")
+    Pagina_inicio.pagina_humedad()
+    canvas1.get_tk_widget().config(width=640, height=580)
+def conexion_a():
+    print("ABRIR TEMPERATURA")    
+    Pagina_inicio.pagina_aire()
+    canvas2.get_tk_widget().config(width=640, height=580)
 
 def on_connect(client, userdata, flags, rc):
     
     if rc == 0:
+        global Connected                #Use global variable
+        Connected = True  
         client.connected_flag=True #set flag       
         #client.subscribe(root_topic)
         client.subscribe(topic_temperatura, qos=1)
         client.subscribe(topic_humedad, qos=1)
         client.subscribe(topic_air, qos=1)
+        print("conexion exitosa")
+        tk.messagebox.showinfo("Conexion MQTT", "Conexion exitosa") 
+        print(Connected)
+    elif rc==3:
+        tk.messagebox.showinfo("Conexion MQTT", "Servidor no accesible")
+    elif rc==4:
+        tk.messagebox.showinfo("Conexion MQTT", "Usuario o contrseña incorrecta")
     else:
- 
         print("Connection failed")
+        tk.messagebox.showinfo("Conexion MQTT", "Usuario o contrseña incorrecta")
 
 def on_disconnect(client, userdata, rc):
     client.connected_flag=False
@@ -83,38 +113,37 @@ def on_message(client, userdata, message):
     
 def on_message_temperature(client, userdata, message):
     a=str(message.payload.decode("utf-8"))
-    box_cur_temp.configure(text=a)
+    Pagina_inicio.box_cur_temp.configure(text=a)
     print("temperatura =",str(message.payload.decode("utf-8")))   
     #data.addt(search_number_string(a))
     data.addt(float(a))
     plot_data_t.plot(data.axis_t,data.axis_tt)
-    box_ave_temp.configure(text=promediarLista(data.axis_t))  
+    Pagina_inicio.box_ave_temp.configure(text=promediarLista(data.axis_t))  
 
 def on_message_humedad(client, userdata, message):
     b=str(message.payload.decode("utf-8"))
-    box_cur_humd.configure(text=b)
+    Pagina_inicio.box_cur_humd.configure(text=b)
     data.addh(float(b))
     plot_data_h.plot(data.axis_h,data.axis_th)
     time.sleep(2)
     print("humedad =",str(message.payload.decode("utf-8")))
-    box_ave_humd.configure(text=promediarLista(data.axis_h)) 
+    Pagina_inicio.box_ave_humd.configure(text=promediarLista(data.axis_h)) 
     if conectar.configure('text')[4]== 'Conectar':
         client.disconnect()
 
 def on_message_calidad(client, userdata, message):          
     c=str(message.payload.decode("utf-8")) 
-    box_cur_air.configure(text=c)
+    Pagina_inicio.box_cur_air.configure(text=c)
     data.adda(float(c))
     plot_data_a.plot(data.axis_a,data.axis_ta)
     print("aire =",str(message.payload.decode("utf-8")))    
-    box_ave_air.configure(text=promediarLista(data.axis_a))
-    
-    
-    
+    Pagina_inicio.box_ave_air.configure(text=promediarLista(data.axis_a))
+        
 def bytes_to_decimal(i,d):
     xx = i - 127
     dec = (-d if xx < 0 else d)/100
     return xx + dec    
+
 def search_number_string(string):
     index_list = []
     del index_list[:]
@@ -137,7 +166,6 @@ def promediarLista(lista):
 def request_data_received():
     global window
     window.after_cancel(cancel_id)
-
 # Request data from node
 def request_data():
     global cancel_id
@@ -179,7 +207,6 @@ class DataPlot:
         
 class RealtimePlot:
     def __init__(self, axes,canvas,fig):
-     
         self.axes = axes
         self.fig = fig
         self.canvas=canvas
@@ -189,7 +216,8 @@ class RealtimePlot:
         self.axes.autoscale_view(True)
         self.axes.relim()
         self.lineplot.set_data(list(range(len(data))),data)
-        
+
+    
         #x_min=min(float(sub) for sub in data1) 
         #x_max=max(float(sub) for sub in data1)        
         #y_min=min(float(sub) for sub in data) 
@@ -202,15 +230,45 @@ class RealtimePlot:
 
 class Start_page():
     def __init__(self,window):
-        self.window = window
-            ##################### GRAPH  BOX ############################
-        self.box_temp = tk.Label(self.window,width=93 ,height=14,bg="#ADD8E6")
+        self.window=window
+        self.box_air = tk.Frame(self.window,width=660 ,height=215,bg="#ADD8E6")
+        self.box_temp = tk.Frame(self.window,width=660 ,height=215,bg="#ADD8E6")    
+        self.box_humd = tk.Frame(self.window,width=660 ,height=215,bg="#ADD8E6")
+        ##################### CURRENT  BOX ####################
+        self.box_cur_temp = tk.Label(self.window,text='', font=("Helvetica", 50, 'bold'))
+        self.box_cur_humd = ttk.Label(self.window,text='', font=("Helvetica", 50, 'bold'))
+        self.box_cur_air = ttk.Label(self.window,text='', font=("Helvetica", 50, 'bold'))
+        ##################### AVERAGE BOX############################
+        self.box_ave_temp = ttk.Label(self.window,text='', font=("Helvetica", 50, 'bold'))
+        self.box_ave_humd = ttk.Label(self.window,text='', font=("Helvetica", 50, 'bold'))
+        self.box_ave_air = ttk.Label(self.window,text='', font=("Helvetica", 50, 'bold'))
+        ################# current title############################
+        self.box_1_cur_temp = tk.Label(self.window,text="TEMPERATURA ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
+        self.box_1_cur_humd = tk.Label(self.window,text="HUMEDAD ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
+        self.box_1_cur_air = tk.Label(self.window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 10 bold"),width=24 ,height=3,bg="#008B8B")
+        ################# average title ###############################
+        self.box_1_ave_temp = tk.Label(self.window,text="TEMPERATURA PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        self.box_1_ave_humd = tk.Label(self.window,text="HUMEDAD PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        self.box_1_ave_air = tk.Label(self.window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+            
+    def principal(self):
+        ###################### CURRENT BOX ##########################
+        self.box_cur_temp.place(x=875,y=80)
+        self.box_cur_humd.place(x=875,y=305)
+        self.box_cur_air.place(x=875,y=530)
+
+        #################### AVERAGE BOX ###########################
+        self.box_ave_temp.place(x=1075,y=80)
+        self.box_ave_humd.place(x=1075,y=305)
+        self.box_ave_air.place(x=1075,y=530)
+
+        ##################### GRAPH  BOX ############################
+        self.box_temp.configure(width=660 ,height=215)
         self.box_temp.place(x=200,y=5)
-        self.box_humd = tk.Label(self.window,width=93 ,height=14,bg="#ADD8E6")
+        self.box_humd.configure(width=660 ,height=215)
         self.box_humd.place(x=200,y=230)
-        self.box_air = tk.Label(self.window,width=93 ,height=14,bg="#ADD8E6")
+        self.box_air.configure(width=660 ,height=215)
         self.box_air.place(x=200,y=455)
-        #Connected = False   #global variable for the state of the connection
     ##################### CURRENT  BOX ############################
         self.box_1_cur_temp = tk.Label(self.window,text="TEMPERATURA ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
         self.box_1_cur_temp.place(x=875,y=5)
@@ -225,19 +283,65 @@ class Start_page():
         self.box_1_ave_humd.place(x=1075,y=230)
         self.box_1_ave_air = tk.Label(self.window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
         self.box_1_ave_air.place(x=1075,y=455)
-        
-    def borrar(self):
-        self.box_temp.destroy()
-        self.box_humd.destroy()
-        self.box_air.destroy()
-        self.box_1_ave_temp.destroy()
-        self.box_1_ave_humd.destroy()
-        self.box_1_ave_air.destroy()
-        self.box_1_cur_humd.destroy()
-        self.box_1_cur_air.destroy()
-        self.box_1_cur_temp.destroy()
+    
+    def pagina_temperatura(self):
+        self.box_temp.place(x=200,y=5)
+        self.box_temp.configure(width=660 ,height=650)
+        self.box_ave_temp.place(x=1075,y=80)
+        self.box_cur_temp.place(x=875,y=80)
+        self.box_1_cur_temp.place(x=875,y=5)
+        self.box_1_ave_temp.place(x=1075,y=5)
 
-class menu():
+        self.box_humd.place_forget()
+        self.box_air.place_forget()
+        self.box_cur_humd.place_forget()
+        self.box_cur_air.place_forget()
+        self.box_ave_humd.place_forget()
+        self.box_ave_air.place_forget()
+        self.box_1_cur_humd.place_forget()        
+        self.box_1_cur_air.place_forget()        
+        self.box_1_ave_humd.place_forget()        
+        self.box_1_ave_air.place_forget()        
+       
+    def pagina_humedad(self):
+        self.box_humd.configure(width=660 ,height=650)
+        self.box_humd.place(x=200,y=5)
+        self.box_ave_humd.place(x=1075,y=80)
+        self.box_cur_humd.place(x=875,y=80)
+        self.box_1_cur_humd.place(x=875,y=5)      
+        self.box_1_ave_humd.place(x=1075,y=5)      
+
+        self.box_temp.place_forget()
+        self.box_air.place_forget()
+        self.box_cur_temp.place_forget()
+        self.box_cur_air.place_forget()
+        self.box_ave_temp.place_forget()
+        self.box_ave_air.place_forget()
+        self.box_1_cur_temp.place_forget()        
+        self.box_1_cur_air.place_forget()        
+        self.box_1_ave_temp.place_forget()        
+        self.box_1_ave_air.place_forget()        
+
+    def pagina_aire(self):
+        self.box_air.configure(width=660 ,height=650)
+        self.box_air.place(x=200,y=5)
+        self.box_ave_air.place(x=1075,y=80)
+        self.box_cur_air.place(x=875,y=80)
+        self.box_1_cur_air.place(x=875,y=5)      
+        self.box_1_ave_air.place(x=1075,y=5)      
+
+        self.box_temp.place_forget()
+        self.box_humd.place_forget()
+        self.box_cur_humd.place_forget()
+        self.box_cur_temp.place_forget()
+        self.box_ave_temp.place_forget()
+        self.box_ave_humd.place_forget()
+        self.box_1_cur_temp.place_forget()        
+        self.box_1_cur_humd.place_forget()        
+        self.box_1_ave_temp.place_forget()        
+        self.box_1_ave_humd.place_forget()        
+    
+class Datos_broker():
     def __init__(self,window):
         self.window=window
         self.box_menu = tk.Label(self.window,width=27 ,height=44,bg="#A9A9A9",relief=tk.RAISED)
@@ -295,22 +399,10 @@ if __name__ == '__main__':
     client.message_callback_add(topic_air, on_message_calidad)
     client.loop_start()
     """
-    ##################### CURRENT  BOX ####################
-    box_cur_temp = tk.Label(window,text='', font=("Helvetica", 50, 'bold'))
-    box_cur_temp.place(x=875,y=80)
-    box_cur_humd = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
-    box_cur_humd.place(x=875,y=305)
-    box_cur_air = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
-    box_cur_air.place(x=875,y=530)
-    ##################### AVERAGE BOX############################
-    box_ave_temp = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
-    box_ave_temp.place(x=1075,y=80)
-    box_ave_humd = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
-    box_ave_humd.place(x=1075,y=305)
-    box_ave_air = ttk.Label(window,text='', font=("Helvetica", 50, 'bold'))
-    box_ave_air.place(x=1075,y=530)
+################ LIST BOX ###############################
+
     ###################  MENU ##################################
-    menu(window)
+    Datos_broker(window)
     Main_button = tk.Menu(window,title="MENU",relief= tk.RAISED)
     #Main_button.add_checkbutton(label="Temperatura")
     host = tk.Entry(window,font=("Helvetica 9 italic"),width=26)
@@ -338,14 +430,20 @@ if __name__ == '__main__':
     conectar = tk.Button(window,text="Conectar",height=2, width=10,font=("Helvetica", 9, 'bold'),relief=tk.RAISED,command=conexion)
     conectar.place(x=20,y=450)
     data = DataPlot()
-    
+################# PAGINAS ###############################
+    Pagina_inicio=Start_page(window)
+    submenu = tk.Menu(window)
+    submenu.add_command(label="Inicio",command=conexion_inicio)
+    submenu.add_command(label="Temperatura",command=conexion_t)
+    submenu.add_command(label="Humedad",command=conexion_h)
+    submenu.add_command(label="Calidad de Aire",command=conexion_a)
+    window.config(menu=submenu)
+################ PLOTS ####################################
     fig = Figure(figsize=([6.4, 1.9]))
     a = fig.add_subplot(111)
     a.set_ylabel("°C", fontsize=8)
     a.set_ylim(10,25)
-    canvas = FigureCanvasTkAgg(fig, master=window,)
-    #canvas.get_tk_widget().place(x=208,y=17)
-    #canvas.draw()
+    canvas = FigureCanvasTkAgg(fig, master=Pagina_inicio.box_temp,)
     plot_data_t=RealtimePlot(a,canvas,fig)
     
     fig1 = Figure(figsize=([6.4, 1.9]))
@@ -353,9 +451,7 @@ if __name__ == '__main__':
     b.plot([],[],"ro-")
     b.set_ylabel("°%", fontsize=8)
     b.set_ylim(30,80)
-    canvas1 = FigureCanvasTkAgg(fig1, master=window,)
-    #canvas1.get_tk_widget().place(x=208,y=242)
-    #canvas1.draw()
+    canvas1 = FigureCanvasTkAgg(fig1, master=Pagina_inicio.box_humd)
     plot_data_h=RealtimePlot(b,canvas1,fig1)
 
     fig2 = Figure(figsize=([6.4, 1.9]))
@@ -363,24 +459,10 @@ if __name__ == '__main__':
     b.plot([],[], "go-")
     c.set_ylabel("°% Air", fontsize=8)
     c.set_ylim(0,60)
-    canvas2 = FigureCanvasTkAgg(fig2, master=window,)
-    #canvas2.get_tk_widget().place(x=208,y=467)
-    #canvas2.draw() 
+    canvas2 = FigureCanvasTkAgg(fig2, master=Pagina_inicio.box_air)
     plot_data_a=RealtimePlot(c,canvas2,fig2)
-    
-    cancel_id = None
-    
-    window.mainloop()
-    '''
-    while 1:
-        window.update()
-        time.sleep(0.01)
-        client.loop()
-        time.sleep(0.02)
-        xdato=data.axis_t
-        if count==5000:
-            print(xdato)
 
-        time.sleep(0.05)
-        count=count+1
-    '''        
+############## LAZO #################################    
+    cancel_id = None
+    window.mainloop()
+
