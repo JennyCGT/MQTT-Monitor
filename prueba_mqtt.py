@@ -89,13 +89,13 @@ client.loop_start()        #start the loop
 while Connected != True:    #Wait for connection
     time.sleep(0.1)
 print("subscribe topics")
-#client.subscribe(root_topic)
+client.subscribe(root_topic)
 client.subscribe(topic_temperatura, qos=1)
 client.subscribe(topic_humedad, qos=1)
 client.subscribe(topic_air, qos=1)
-client.message_callback_add(topic_temperatura, on_message_temperature)
-client.message_callback_add(topic_humedad, on_message_humedad)
-client.message_callback_add(topic_air, on_message_calidad)
+#client.message_callback_add(topic_temperatura, on_message_temperature)
+#client.message_callback_add(topic_humedad, on_message_humedad)
+#client.message_callback_add(topic_air, on_message_calidad)
 try:
     while True:
         time.sleep(1)
