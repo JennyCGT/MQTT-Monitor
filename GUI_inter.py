@@ -13,14 +13,16 @@ import time
 from datetime import datetime
 import random 
 import csv
-
+client = mqttClient.Client("Pyhton")               #create new instance
 Connected =False
 Page_name=""
+boton=False
 ####################### CALLBACKS ########################################
 
 def conexion():
     global Connected  
-    print(conectar.configure('text'))
+    global client
+    global boton
     broker_address= host.get()  #Broker address
     port = port1.get()                    #Broker port
     user = user1.get()                    #Connection username
@@ -30,27 +32,25 @@ def conexion():
     topic_air=topic_a.get()
     print(type(conectar.configure('text')))
 ######################## SETTING MQTT ################################
-    client = mqttClient.Client("Python"+str(random.randint(1,101)))               #create new instance
+    #client = mqttClient.Client("Python"+str(random.randint(1,101)))               #create new instance
     client.username_pw_set(user, password=password)    #set username and password
-    client.on_connect= on_connect 
-    client.on_message=on_message                     #attach function to callback
-    client.on_disconnect=on_disconnect
-    client.connect(broker_address, port=int(port))          #connect to broker
-
-    if Connected!=True:
-        
-        #client.subscribe(root_topic)
+    #client.on_connect= on_connect 
+    #client.on_message=on_message                     #attach function to callback
+    #client.on_disconnect=on_disconnect
+    boton=True
+    status= client.is_connected()
+    print(status)
+    
+    if status==False:
+        client.connect(broker_address, port=int(port),keepalive=1)
         client.message_callback_add(topic_temperatura, on_message_temperature)
         client.message_callback_add(topic_humedad, on_message_humedad)
         client.message_callback_add(topic_air, on_message_calidad)
-        
         client.loop_start()
-        time.sleep(0.6)
-        print(Connected)
+        print("COnection") 
 
     if conectar.configure('text')[4]== 'Conectar':
         Pagina_inicio.principal()
-        #canvas = FigureCanvasTkAgg(fig, master=window,)
         canvas.get_tk_widget().config(width=640, height=190)
         canvas.get_tk_widget().place(x=10,y=10)
         canvas.draw()
@@ -61,11 +61,16 @@ def conexion():
         canvas2.get_tk_widget().place(x=10,y=10)
         canvas2.draw()
         count=1
-        if Connected==True and client.is_connected()==True:
+        if client.connected_flag==True and Connected==0:
             conectar.configure(text="Desconectar")
+        else:
+            print("Error Conexion")
     else:
         conectar.configure(text="Conectar")
-        tk.messagebox.showinfo("Conexion MQTT", "Desconexion") 
+        client.loop_stop()
+        client.disconnect()
+        tk.messagebox.showinfo("Conexion MQTT", "Desconexion exitosa") 
+        #tk.messagebox.showinfo("Conexion MQTT", "Desconexion") 
 
 def conexion_inicio():
     print("INICIO")
@@ -104,23 +109,33 @@ def get_data():
         wr.writerows(data.data)
                 
 ############### MQTT CALLBACK #######################
-
+def on_disconnect(client, userdata, rc):
+    print("desco")
+    client.connected_flag=False
+    Connected=client.connected_flag
+    #tk.messagebox.showinfo("Conexion MQTT", "Desconexion exitosa") 
+   
 def on_connect(client, userdata, flags, rc):
-    
+    global Connected                #Use global variable
+    global boton
+    print(rc)    
     if rc == 0:
-        global Connected                #Use global variable
         client.connected_flag=True #set flag       
-        Connected=client.connected_flag
-        #client.subscribe("lKlhsHxr6zKCwBr")
+        Connected=rc        #client.subscribe("lKlhsHxr6zKCwBr")
         client.subscribe(topic_temperatura, qos=1)
         client.subscribe(topic_humedad, qos=1)
         client.subscribe(topic_air, qos=1)
         print("conexion exitosa")
-        tk.messagebox.showinfo("Conexion MQTT", "Conexion exitosa")
-
+        if boton:
+            tk.messagebox.showinfo("Conexion MQTT", "Conexion exitosa")
+            conectar.configure(text="Desconectar")
+            boton=False
     else:
         print("Connection failed")
-        print(rc)
+        if boton:
+            tk.messagebox.showinfo("Conexion MQTT", "Error de conexion")
+            boton=False
+
 
     '''elif rc==2:
         tk.messagebox.showinfo("Conexion MQTT", "Client ID no valido")
@@ -129,14 +144,6 @@ def on_connect(client, userdata, flags, rc):
     elif rc==4:
         tk.messagebox.showinfo("Conexion MQTT", "Usuario o contraseña incorrecta")
     '''
-
-def on_disconnect(client, userdata, rc):
-    global Connected
-    client.connected_flag=False
-    client.disconnect_flag=True
-    Connected=client.connected_flag
-    #tk.messagebox.showinfo("Conexion MQTT", "Desconexion exitosa") 
-    print("entre")
 
 def on_message(client, userdata, message):
     a=str(message.payload.decode("utf-8"))
@@ -150,25 +157,26 @@ def on_message_humedad(client, userdata, message):
     global Connected
     b=str(message.payload.decode("utf-8"))
     save_data_sync(float(b),message.topic)
-    if conectar.configure('text')[4]== 'Conectar':
-        #client.loop_stop()
-        client.disconnect()
+    #if conectar.configure('text')[4]== 'Conectar':
+    #    client.loop_stop()
+    #    client.disconnect()
 
 def on_message_calidad(client, userdata, message):          
     c=str(message.payload.decode("utf-8")) 
     save_data_sync(float(c),message.topic)
     time.sleep(2)
+
 def save_data_sync(a,topic):
     if(topic==topic_t.get()):
         data.save(a,0)
-        plot_data_t.plot(data.axis_t,data.axis_tt)
+        #plot_data_t.plot(data.axis_t,data.axis_tt)
     
     if(topic==topic_h.get()):
         data.save(a,1)
-        plot_data_h.plot(data.axis_h,data.axis_tt)
+        #plot_data_h.plot(data.axis_h,data.axis_tt)
     if(topic==topic_a.get()):
         data.save(a,2)
-        plot_data_a.plot(data.axis_a,data.axis_tt)
+        #plot_data_a.plot(data.axis_a,data.axis_tt)
         
 
 
@@ -246,6 +254,9 @@ class DataPlot:
         Pagina_inicio.box_cur_air.configure(text=a)
         Pagina_inicio.box_ave_air.configure(text=promediarLista(data.axis_a))
         self.data.append([tim ,str(t),str(h),str(a) ])
+        plot_data_t.plot(data.axis_t,data.axis_tt)
+        plot_data_h.plot(data.axis_h,data.axis_tt)
+        plot_data_a.plot(data.axis_a,data.axis_tt)
 
     def save (self,a,i):
         self.count=self.count+1
@@ -347,18 +358,18 @@ class Start_page():
         self.box_air.configure(width=660 ,height=215)
         self.box_air.place(x=200,y=455)
     ##################### CURRENT  BOX ############################
-        self.box_1_cur_temp = tk.Label(self.window,text="TEMPERATURA ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
+        #self.box_1_cur_temp = tk.Label(self.window,text="TEMPERATURA ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
         self.box_1_cur_temp.place(x=875,y=5)
-        self.box_1_cur_humd = tk.Label(self.window,text="HUMEDAD ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
+        #self.box_1_cur_humd = tk.Label(self.window,text="HUMEDAD ACTUAL",font=("Helvetica 10 bold"),width=24,height=3,bg="#008B8B")
         self.box_1_cur_humd.place(x=875,y=230)
-        self.box_1_cur_air = tk.Label(self.window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 10 bold"),width=24 ,height=3,bg="#008B8B")
+        #self.box_1_cur_air = tk.Label(self.window,text="CALIDAD DE AIRE ACTUAL",font=("Helvetica 10 bold"),width=24 ,height=3,bg="#008B8B")
         self.box_1_cur_air.place(x=875,y=455)
     ########################## AVERAGE BOX ############################
-        self.box_1_ave_temp = tk.Label(self.window,text="TEMPERATURA PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        #self.box_1_ave_temp = tk.Label(self.window,text="TEMPERATURA PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
         self.box_1_ave_temp.place(x=1075,y=5)
-        self.box_1_ave_humd = tk.Label(self.window,text="HUMEDAD PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        #self.box_1_ave_humd = tk.Label(self.window,text="HUMEDAD PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
         self.box_1_ave_humd.place(x=1075,y=230)
-        self.box_1_ave_air = tk.Label(self.window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
+        #self.box_1_ave_air = tk.Label(self.window,text="CALIDAD AIRE PROMEDIO",font=("Helvetica 10 bold"),width=24,height=3,bg="#ADD8E6")
         self.box_1_ave_air.place(x=1075,y=455)
     #########################   LIST BOX  ##############################
         self.frame.place_forget()
@@ -472,26 +483,17 @@ if __name__ == '__main__':
     topic_humedad ="lKlhsHxr6zKCwBr/humedad"
     topic_air="lKlhsHxr6zKCwBr/Calidad_aire"
     root_topic="lKlhsHxr6zKCwBr/#"
+######################## SETTING MQTT ################################
+    #client = mqttClient.Client("Pyhton")               #create new instance
+    client.username_pw_set(user, password=password)    #set username and password    
+    client.on_connect= on_connect 
+    client.on_message=on_message                     #attach function to callback
+    client.on_disconnect=on_disconnect
+
 #########################   WINDOWS #########################################
     window = tk.Tk() # initialise a window
     window.title("Monitoring IOT")
     window.geometry("1300x700+5+5")
-######################## SETTING MQTT ################################
-    client = mqttClient.Client("Pyhton")               #create new instance
-    client.username_pw_set(user, password=password)    #set username and password
-    
-    client.on_connect= on_connect 
-    client.on_message=on_message                     #attach function to callback
-    client.connect(broker_address, port=port)          #connect to broker
-    client.on_disconnect=on_disconnect
-    """
-    ## SUBSCRIBING
-    #client.on_message= on_message                      #attach function to callback
-    client.message_callback_add(topic_temperatura, on_message_temperature)
-    client.message_callback_add(topic_humedad, on_message_humedad)
-    client.message_callback_add(topic_air, on_message_calidad)
-    client.loop_start()
-    """
 
 ###################  MENU ##################################
     Datos_broker(window)
@@ -562,6 +564,5 @@ if __name__ == '__main__':
     plot_data_a=RealtimePlot(c,canvas2,fig2)
 
 ############## LAZO #################################    
-    cancel_id = None
     window.mainloop()
 
