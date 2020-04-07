@@ -15,6 +15,7 @@ In this project is used a ESP32 to simulate the environment variables (Temperatu
 ## Broker
 in the Ioticos.org broker, we create an account and a new Nodo with three topcis one for each variable.
 ## Python Interface
+The interface was develpment in python v3.7, the code is in the GUI_inter.py file
 The interface has a parametrs setting box in left side. In this one the user could configure: broker address, port, user, password, topic of each parameter.
 In upper side there are four tabs that indicate 4 pages: Main, Temperature, Humidity and Air quality.
 
@@ -37,9 +38,8 @@ In center side the variables are shown in a real time big graph, in the right si
 <img src="https://github.com/JennyCGT/Project1/blob/master/images/Capturea.JPG" height="350">
 </p>  
 
-
-
-
+## MQTT Test
+The file prueba_mqtt.py is a simple program to test the communication with the broker and the correct subscription to the diferent topics
 
 
 
