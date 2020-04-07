@@ -1,2 +1,51 @@
-# Project1
-Monitoring temperature, air quality, humidity in real time using MQTT
+# MONITORING SYSTEM
+## Objetive
+Monitoring the environment variables:
+- Temperature
+- Humidity
+- Air Quality 
+This variables are sent from a ESP32 board to a computer through MQTT and could be showed, exported in a interface created in python.
+
+## ESP32 board
+In this project is used a ESP32 to simulate the environment variables (Temperature, Humidity, Air quality) and send the data to the broker (ioticos.org) through MQTT using WIFI module of ESP32.  
+<p align="center">
+<img src="https://www.prometec.net/wp-content/uploads/2017/12/HTB1vqwDQXXXXXapXXXXq6xXFXXX0-768x768.jpg" height="200">
+</p>
+
+## Broker
+in the Ioticos.org broker, we create an account and a new Nodo with three topcis one for each variable.
+## Python Interface
+The interface has a parametrs setting box in left side. In this one the user could configure: broker address, port, user, password, topic of each parameter.
+In upper side there are four tabs that indicate 4 pages: Main, Temperature, Humidity and Air quality.
+
+### Main Page
+In center side the three variables are shown in a real time graph and in the right side current values and average values are displayed.
+<p align="center">
+<img src="https://github.com/JennyCGT/Project1/blob/master/images/Capture.JPG" height="400">
+</p>  
+
+### Temperature Page, Humidity and Air Quality Page  
+
+In center side the variables are shown in a real time big graph, in the right side current value and average value are displayed, also there is a treeview with date,time and data. This information could be exported to a CVS file called output.  
+<p align="center">
+<img src="https://github.com/JennyCGT/Project1/blob/master/images/Capture1.JPG" height="350">
+</p>  
+<p align="center">
+<img src="https://github.com/JennyCGT/Project1/blob/master/images/Captureh.JPG" height="350">
+</p>  
+<p align="center">
+<img src="https://github.com/JennyCGT/Project1/blob/master/images/Capturea.JPG" height="350">
+</p>  
+
+
+
+
+
+
+
+
+
+
+
+
+
