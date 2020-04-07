@@ -8,6 +8,8 @@ This variables are sent from a ESP32 board to a computer through MQTT and could 
 
 ## ESP32 board
 In this project is used a ESP32 to simulate the environment variables (Temperature, Humidity, Air quality) and send the data to the broker (ioticos.org) through MQTT using WIFI module of ESP32.  
+In the ESP32 folder there is arduino project. In that project, all the variables are simulated by a random numbers which are under limits referenced to the real behaviour of the environment variables.  
+
 <p align="center">
 <img src="https://www.prometec.net/wp-content/uploads/2017/12/HTB1vqwDQXXXXXapXXXXq6xXFXXX0-768x768.jpg" height="200">
 </p>
