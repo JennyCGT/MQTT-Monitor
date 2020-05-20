@@ -35,7 +35,7 @@ In center side the variables are shown in a real time big graph, in the right si
 <img src="images/Capture1.JPG" class="img-responsive" height="350"> 
 </p>  
 <p align="center">
-<img src="images/Capturh1.JPG" class="img-responsive" height="350"> 
+<img src="images/Capturh.JPG" class="img-responsive" height="350"> 
 </p>  
 <p align="center">
 <img src="images/Capturea.JPG" class="img-responsive" height="350"> 
