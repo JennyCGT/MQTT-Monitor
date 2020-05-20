@@ -7,7 +7,7 @@ Monitoring the environment variables:
 This variables are sent from a ESP32 board to a computer through MQTT and could be showed, exported in a interface created in python.
 
 ## ESP32 board
-In this project is used a ESP32 to simulate the environment variables (Temperature, Humidity, Air quality) and send the data to the broker (ioticos.org) through MQTT using WIFI module of ESP32.  
+In this project is used a ESP32 to monitoring the environment variables (Temperature, Humidity, Air quality) and send the data to the online broker through MQTT using WIFI module of ESP32.  
 In the ESP32 folder there is arduino project. In that project, all the variables are simulated by a random numbers which are under limits referenced to the real behaviour of the environment variables.  
 
 <p align="center">
@@ -15,7 +15,8 @@ In the ESP32 folder there is arduino project. In that project, all the variables
 </p>
 
 ## Broker
-in the Ioticos.org broker, we create an account and a new Nodo with three topcis one for each variable.
+All the data collected by the ESP32 are sent to MQTT Broker in three different topics.
+
 ## Python Interface
 The interface was develpment in python v3.7, the code is in the GUI_inter.py file
 The interface has a parametrs setting box in left side. In this one the user could configure: broker address, port, user, password, topic of each parameter.
