@@ -25,7 +25,7 @@ In upper side there are four tabs that indicate 4 pages: Main, Temperature, Humi
 ### Main Page
 In center side the three variables are shown in a real time graph and in the right side current values and average values are displayed.
 <p align="center">
-<img src="https://github.com/JennyCGT/Project1/blob/master/images/Capture.JPG" height="400">
+<img src="images/Capture.JPG" class="img-responsive" height="400"> 
 </p>  
 
 ### Temperature Page, Humidity and Air Quality Page  
@@ -34,15 +34,11 @@ In center side the variables are shown in a real time big graph, in the right si
 <p align="center">
 <img src="images/Capture1.JPG" class="img-responsive" height="350"> 
 </p>  
-
 <p align="center">
-<img src="https://github.com/JennyCGT/Project1/blob/master/images/Capture1.JPG" height="350">
+<img src="images/Capturh1.JPG" class="img-responsive" height="350"> 
 </p>  
 <p align="center">
-<img src="https://github.com/JennyCGT/Project1/blob/master/images/Captureh.JPG" height="350">
-</p>  
-<p align="center">
-<img src="https://github.com/JennyCGT/Project1/blob/master/images/Capturea.JPG" height="350">
+<img src="images/Capturea.JPG" class="img-responsive" height="350"> 
 </p>  
 
 ## MQTT Test
