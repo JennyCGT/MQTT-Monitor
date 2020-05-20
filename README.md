@@ -32,6 +32,10 @@ In center side the three variables are shown in a real time graph and in the rig
 
 In center side the variables are shown in a real time big graph, in the right side current value and average value are displayed, also there is a treeview with date,time and data. This information could be exported to a CVS file called output.  
 <p align="center">
+<img src="images/Capture1.JPG" class="img-responsive" height="350"> 
+</p>  
+
+<p align="center">
 <img src="https://github.com/JennyCGT/Project1/blob/master/images/Capture1.JPG" height="350">
 </p>  
 <p align="center">
